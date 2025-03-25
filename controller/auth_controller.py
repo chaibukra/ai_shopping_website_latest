@@ -1,0 +1,20 @@
+from starlette import status
+from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordRequestForm
+from exceptions.security_exceptions import user_credentials_exception
+from model.auth_response import AuthResponse
+from service import auth_service
+
+router = APIRouter(
+    prefix="/auth",
+    tags=["auth"],
+)
+
+
+@router.post("/token", status_code=status.HTTP_200_OK, response_model=AuthResponse)
+async def login_for_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = await auth_service.authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise user_credentials_exception()
+    return await auth_service.create_access_token(user)
+

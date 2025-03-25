@@ -1,0 +1,56 @@
+# Python
+*.py[cod]
+__pycache__/
+.venv/
+venv/
+env/
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+.coverage
+.coverage.*
+*.log
+
+# Streamlit
+.streamlit/cache/
+.streamlit/config.toml
+
+# FastAPI
+.env
+.env.docker
+.env.*
+.fastapi_cache/
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*~
+*.bak
+*.tmp
+*.DS_Store
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+*.stackdump
+
+# Data Files (if you have any, and they are not meant to be tracked)
+*.json
+*.sqlite
+*.db
+
+# Build artifacts (if you have any)
+build/
+dist/
+*.egg
+*.whl
+
+
+# Other files you might want to ignore
+*.secret
+*.key
+*.pem
+Explanation of Key Entries:
+
+Python:
