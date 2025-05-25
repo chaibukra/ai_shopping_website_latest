@@ -3,8 +3,7 @@
 This repository contains the source code for an AI-powered shopping website built with FastAPI, Streamlit, MySQL, Redis, and Docker.
 
 ## Project Overview
-
-This website is an e-commerce platform that allows users to buy a wide range of products.
+Discover a cutting-edge AI-powered e-commerce platform combining a robust FastAPI backend with an interactive Streamlit frontend. Features include user authentication, smart product search, real-time inventory management, and a Gemini-based AI chat assistant to enhance customer experience. Built for scalability and ease of deployment using Docker, this project showcases modern full-stack development and AI integration in retail.
 
 ## Key Features
 
@@ -43,6 +42,14 @@ This website is an e-commerce platform that allows users to buy a wide range of 
     ├── requirements.txt  # Project dependencies
     ├── .env  # Environment variables
 
+
+## 📦 Prerequisites
+
+- Python 3.12.0
+- pip
+- Docker & Docker Compose
+
+---
 
 ## Installation and Setup
 
