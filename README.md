@@ -42,6 +42,7 @@ Discover a cutting-edge AI-powered e-commerce platform combining a robust FastAP
     ├── requirements.txt  # Project dependencies
     ├── .env  # Environment variables
 
+---
 
 ## 📦 Prerequisites
 
