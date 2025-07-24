@@ -1,13 +1,20 @@
 # Use a Python base image
-FROM python:3.12-slim
+FROM python:3.12-slim-bullseye
+
+
+#For TLS
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       gnupg \
+       ca-certificates \
+       curl \
+       netcat \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 
 # Set the working directory in the container
 WORKDIR /app
-
-#For TLS
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl netcat && \
-    rm -rf /var/lib/apt/lists/* \
 
 # Copy the requirements file into the container
 COPY requirements.txt .
