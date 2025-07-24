@@ -14,6 +14,6 @@ class Config(BaseConfig):
     ALGORITHM: str = "HS256"
     TOKEN_EXPIRY_TIME: float = 20.0
     DATABASE_URL: str = os.getenv("DATABASE_URL")
-
+    REDIS_USERNAME = os.getenv("REDIS_USERNAME", None)
     REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", None)
     REDIS_SSL = os.getenv("REDIS_SSL", "False").lower() == "true"
