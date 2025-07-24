@@ -21,5 +21,3 @@ EXPOSE 8000
 # Expose the Streamlit port
 EXPOSE 8501
 
-
-# Start the FastAPI application (using uvicorn)
