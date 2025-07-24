@@ -4,6 +4,11 @@ FROM python:3.12-slim
 # Set the working directory in the container
 WORKDIR /app
 
+#For TLS
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates curl netcat && \
+    rm -rf /var/lib/apt/lists/* \
+
 # Copy the requirements file into the container
 COPY requirements.txt .
 
