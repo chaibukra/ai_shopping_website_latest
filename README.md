@@ -30,6 +30,7 @@ The application strictly adheres to the **Layered (Multi-Tier) Architecture** to
 
 ## 📂 Project Structure
 
+```text
 ├── .github/workflows/
 │   └── build_and_push_to_dockerhub.yml  # Automated CI/CD workflow
 ├── config/
@@ -64,6 +65,7 @@ The application strictly adheres to the **Layered (Multi-Tier) Architecture** to
 ├── Dockerfile.fastapi                   # Multi-stage build for the backend
 ├── Dockerfile.streamlit                 # Multi-stage build for the frontend UI
 └── docker-compose.yml                   # Local multi-container orchestration ecosystem
+```
 
 ---
 
@@ -76,22 +78,28 @@ Ensure you have the following orchestration tools installed locally:
 ### 1. Environment Setup
 Clone this repository to your local workspace and navigate into the root directory:
 
+```bash
 git clone [https://github.com/chaibukra/ai_shopping_website_latest.git](https://github.com/chaibukra/ai_shopping_website_latest.git)
 cd ai_shopping_website_latest
+```
 
 Create a .env file in the root directory and define your runtime configurations. Ensure you supply a valid Gemini API Key:
 
+```bash
 DATABASE_URL=mysql+pymysql://root:password@db:3306/shopping_db
 REDIS_HOST=redis
 REDIS_PORT=6379
 SECRET_KEY=your_super_secret_jwt_signing_key
 BASE_URL=http://web:8000
 GEMINI_API_KEY=your_actual_gemini_api_key
+```
 
 ### 2. Local Infrastructure Orchestration
 Spin up the entire decoupled ecosystem (FastAPI Server, Streamlit UI, MySQL DB, and Redis) using Docker Compose:
 
+```bash
 docker-compose up -d --build
+```
 
 The system components will initialize and be accessible at:
 * Interactive Backend API Documentation (Swagger): http://localhost:8000/docs
