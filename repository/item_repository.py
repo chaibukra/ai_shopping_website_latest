@@ -17,16 +17,16 @@ async def get_item_by_id(item_id: int) -> Optional[Item]:
 
 
 async def get_all_items() -> List[Item]:
-    if await cache_repository.is_key_exists(TABLE_NAME):
-        str_all_items = await cache_repository.get_cache_entity(TABLE_NAME)
+    str_all_items = await cache_repository.get_cache_entity(TABLE_NAME)
+    if str_all_items is not None:
         all_items_data = json.loads(str_all_items)
         return [Item(**item) for item in all_items_data]
-    else:
-        query = f"SELECT * FROM {TABLE_NAME}"
-        items = await database.fetch_all(query)
-        all_items = [Item(**item) for item in items]
-        await cache_repository.create_cache_entity(TABLE_NAME, json.dumps([item.__dict__ for item in all_items]))
-        return all_items
+
+    query = f"SELECT * FROM {TABLE_NAME}"
+    items = await database.fetch_all(query)
+    all_items = [Item(**item) for item in items]
+    await cache_repository.create_cache_entity(TABLE_NAME, json.dumps([item.__dict__ for item in all_items]))
+    return all_items
 
 
 async def get_items_by_contain_name(word_to_search: str) -> Optional[List[Item]]:
