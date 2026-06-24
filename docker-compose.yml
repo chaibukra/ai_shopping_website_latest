@@ -3,6 +3,7 @@ services:
 
   db:
     image: mysql:8.0
+    restart: unless-stopped
     environment:
       - MYSQL_DATABASE=shopping_app_database
       - MYSQL_USER=user
@@ -13,36 +14,58 @@ services:
     volumes:
       - ./resources/db-migrations:/docker-entrypoint-initdb.d/
     command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-proot_password" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
-    container_name: "redis"
     image: redis:latest
     ports:
       - "6379:6379"
-    restart: always
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   web:
     image: "chaibukra/ai_shopping_website_with_extra_features_gimini"
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.fastapi
     ports:
       - "8000:8000"
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     env_file:
       - /.env.docker
     volumes:
       - .:/app
-    restart: always
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/docs" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   streamlit-app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
     ports:
       - "8501:8501"
     restart: always
     depends_on:
-      - web # Ensures FastAPI starts first
+      web: # Ensures FastAPI starts first
+        condition: service_healthy
     command: sh -c "streamlit run ui/Home.py"
     env_file:
       - /.env.docker
