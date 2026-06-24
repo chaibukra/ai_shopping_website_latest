@@ -7,6 +7,8 @@ load_dotenv(dotenv_path)
 
 
 class Config(BaseConfig):
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT")
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL")
     REDIS_HOST: str = os.getenv("REDIS_HOST")
     REDIS_PORT: int = os.getenv("REDIS_PORT")
     REDIS_TTL: int = 120
