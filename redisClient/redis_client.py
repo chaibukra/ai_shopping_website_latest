@@ -7,4 +7,8 @@ redis_client = redis.Redis(host=config.REDIS_HOST,
                            password=config.REDIS_PASSWORD,
                            username=config.REDIS_USERNAME,
                            decode_responses=True,
-                           ssl=config.REDIS_SSL)
+                           ssl=config.REDIS_SSL,
+                           socket_connect_timeout=0.05,
+                           socket_timeout=0.05,
+                           retry_on_timeout=False
+                           )
