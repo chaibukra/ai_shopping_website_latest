@@ -17,15 +17,15 @@ async def get_item_by_id(item_id: int) -> Optional[Item]:
 
 
 async def get_all_items() -> List[Item]:
-    if cache_repository.is_key_exists(TABLE_NAME):
-        str_all_items = cache_repository.get_cache_entity(TABLE_NAME)
+    if await cache_repository.is_key_exists(TABLE_NAME):
+        str_all_items = await cache_repository.get_cache_entity(TABLE_NAME)
         all_items_data = json.loads(str_all_items)
         return [Item(**item) for item in all_items_data]
     else:
         query = f"SELECT * FROM {TABLE_NAME}"
         items = await database.fetch_all(query)
         all_items = [Item(**item) for item in items]
-        cache_repository.create_cache_entity(TABLE_NAME, json.dumps([item.__dict__ for item in all_items]))
+        await cache_repository.create_cache_entity(TABLE_NAME, json.dumps([item.__dict__ for item in all_items]))
         return all_items
 
 
@@ -63,6 +63,6 @@ async def update_item_quantity_after_purchase(item_id: int, quantity_to_decrease
     WHERE item_id = :item_id
     """
     values = {"item_id": item_id, "quantity_to_decrease": quantity_to_decrease}
-    if cache_repository.is_key_exists(TABLE_NAME):
-        cache_repository.delete_cache_entity(TABLE_NAME)
+    if await cache_repository.is_key_exists(TABLE_NAME):
+        await cache_repository.delete_cache_entity(TABLE_NAME)
     await database.execute(query, values=values)
