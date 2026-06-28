@@ -6,8 +6,6 @@ st.set_page_config(page_title="Your AI Chat Assistant", page_icon="🛒")
 
 set_png_as_page_bg()
 
-if "df" not in st.session_state:
-    st.session_state.df = api.get_all_items()
 
 if "chat_massages" not in st.session_state:
     st.session_state.chat_massages = [
