@@ -7,6 +7,7 @@ from controller.user_favorite_item_controller import router as user_favorite_ite
 from controller.order_controller import router as order_router
 from controller.auth_controller import router as auth_router
 from controller.predict_controller import router as predict_router
+from controller.gemini_controller import router as gemini_router
 from fastapi.middleware.cors import CORSMiddleware
 from repository.database import database
 
@@ -48,4 +49,5 @@ app.include_router(user_favorite_item_router)
 app.include_router(order_router)
 app.include_router(auth_router)
 app.include_router(predict_router)
+app.include_router(gemini_router)
 

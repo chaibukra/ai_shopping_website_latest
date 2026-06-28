@@ -19,3 +19,4 @@ class Config(BaseConfig):
     REDIS_USERNAME = os.getenv("REDIS_USERNAME", None)
     REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", None)
     REDIS_SSL = os.getenv("REDIS_SSL", "False").lower() == "true"
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
