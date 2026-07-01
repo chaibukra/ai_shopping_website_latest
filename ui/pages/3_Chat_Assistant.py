@@ -1,11 +1,16 @@
 import streamlit as st
 from api import api
 from background_config import set_png_as_page_bg
+import uuid
+
 
 st.set_page_config(page_title="Your AI Chat Assistant", page_icon="🛒")
 
 set_png_as_page_bg()
 
+
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
 
 if "chat_massages" not in st.session_state:
     st.session_state.chat_massages = [
@@ -35,10 +40,7 @@ if chat_input:
         with st.chat_message("user", avatar="😎"):
             st.markdown(chat_input)
 
-        full_message = api.chat(
-            chat_input,
-            st.session_state.chat_massages
-        )
+        full_message = api.chat(st.session_state.session_id, chat_input)
 
         with st.chat_message("assistant", avatar="👲"):
             st.markdown(full_message)

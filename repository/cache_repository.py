@@ -39,6 +39,7 @@ async def create_cache_entity(key: str, value: str):
     if not await redis_client.exists(key):
         await redis_client.setex(key, config.REDIS_TTL, value)
 
+
 @redis_guard(default_return=None)
 async def get_cache_entity(key: str) -> Optional[str]:
     return await redis_client.get(key)

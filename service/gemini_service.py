@@ -1,7 +1,10 @@
+import json
+
 from google import genai
 from google.genai import types
 
 from config.config import Config
+from redisClient.redis_client import redis_client
 
 config = Config()
 
@@ -12,7 +15,7 @@ def convert_history(history):
     gemini_history = []
 
     for msg in history:
-        role = "model" if msg["name"] == "assistant" else "user"
+        role = "model" if msg["role"] == "assistant" else "user"
 
         gemini_history.append(
             {
@@ -51,3 +54,21 @@ def ask_gemini(message: str, history: list, items) -> str:
     except Exception as e:
         print(f"Gemini Server Error: {e}")
 
+
+async def add_message(session_id: str, role: str, content: str):
+    key = f"chat:{session_id}"
+
+    message = {
+        "role": role,
+        "content": content
+    }
+
+    await redis_client.rpush(key, json.dumps(message))
+    await redis_client.expire(key, 86400)
+
+
+async def get_history(session_id: str) -> list[dict]:
+    key = f"chat:{session_id}"
+    messages = await redis_client.lrange(key, 0, -1)
+
+    return [json.loads(message) for message in messages]

@@ -1,5 +1,3 @@
-
-
 from fastapi import APIRouter
 
 from model.chat_request import ChatRequest
@@ -16,10 +14,15 @@ router = APIRouter(
 async def chat(request: ChatRequest):
     items = await item_service.get_all_items()
 
+    history = await gemini_service.get_history(request.session_id)
+
     answer = gemini_service.ask_gemini(
         message=request.message,
-        history=request.history,
-        items=items
-    )
+        history=history,
+        items=items)
+
+    await gemini_service.add_message(request.session_id, "user", request.message)
+
+    await gemini_service.add_message(request.session_id, "assistant", answer)
 
     return ChatResponse(answer=answer)
