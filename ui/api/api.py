@@ -207,8 +207,8 @@ def predict_user_expenses_for_tech_items(user_id: int, token: str):
         st.toast(response.json().get("detail"), icon=":material/error:")
 
 
-def chat(chat_input,chat_massages):
+def chat(session_id, chat_input):
     url = f"{BASE_URL}/chat/ask"
-    response = requests.post(url,json={"message": chat_input, "history": chat_massages})
+    response = requests.post(url, json={"session_id": session_id ,"message": chat_input})
     full_message = response.json()["answer"]
     return full_message
