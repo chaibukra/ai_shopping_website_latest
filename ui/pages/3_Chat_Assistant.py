@@ -27,7 +27,7 @@ for massage in st.session_state.chat_massages:
 
 chat_input = st.chat_input(placeholder="Please Enter your massage here")
 if chat_input:
-    if st.session_state.massage_counter != 5:
+    if st.session_state.massage_counter != 40:
 
         st.session_state.chat_massages.append(
             {
@@ -59,7 +59,7 @@ if chat_input:
         st.session_state.chat_massages.append(
             {
                 "name": "assistant",
-                "content": "Sorry you have just 5 question you can ask",
+                "content": "Sorry you have just 40 question you can ask",
                 "avatar": "👲"
             }
         )
