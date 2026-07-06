@@ -86,7 +86,7 @@ cd ai_shopping_website_latest
 Create a .env file in the root directory and define your runtime configurations. Ensure you supply a valid Gemini API Key:
 
 ```bash
-DATABASE_URL=mysql+pymysql://root:password@db:3306/shopping_db
+DATABASE_URL=mysql+aiomysql://root:password@db:3306/shopping_db
 REDIS_HOST=redis
 REDIS_PORT=6379
 SECRET_KEY=your_super_secret_jwt_signing_key
