@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from exceptions.security_exceptions import user_credentials_exception
 from model.auth_response import AuthResponse
+from model.refresh_request import RefreshRequest
 from service import auth_service
 
 router = APIRouter(
@@ -16,5 +17,10 @@ async def login_for_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = await auth_service.authenticate_user(form_data.username, form_data.password)
     if not user:
         raise user_credentials_exception()
-    return await auth_service.create_access_token(user)
+    return await auth_service.create_access_and_refresh_token(user)
 
+
+@router.post("/refresh", status_code=status.HTTP_200_OK, response_model=AuthResponse)
+async def refresh(refresh_request: RefreshRequest):
+    user = await auth_service.validate_and_revoke_refresh_token(refresh_request.refresh_token)
+    return auth_service.create_access_and_refresh_token(user)
