@@ -15,6 +15,7 @@ class Config(BaseConfig):
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     ALGORITHM: str = "HS256"
     TOKEN_EXPIRY_TIME: float = 20.0
+    REFRESH_TOKEN_EXP_TIME: int = 1
     DATABASE_URL: str = os.getenv("DATABASE_URL")
     REDIS_USERNAME = os.getenv("REDIS_USERNAME", None)
     REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", None)

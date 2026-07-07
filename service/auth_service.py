@@ -56,7 +56,7 @@ async def token_get_user_role(token: str) -> Optional[User]:
 
 
 async def create_refresh_token(user: User) -> str:
-    token_expire_time = datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=1)
+    token_expire_time = datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=config.REFRESH_TOKEN_EXP_TIME)
     jti = str(uuid.uuid4())
     user_data = {"subject": user.username, "id": user.id, "jti": jti, "type": "refresh", "exp": token_expire_time}
     token = jwt.encode(user_data, config.SECRET_KEY, config.ALGORITHM)
