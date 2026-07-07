@@ -61,7 +61,7 @@ async def create_refresh_token(user: User) -> str:
     user_data = {"subject": user.username, "id": user.id, "jti": jti, "type": "refresh", "exp": token_expire_time}
     token = jwt.encode(user_data, config.SECRET_KEY, config.ALGORITHM)
 
-    await redis_client.set(f"refresh:{jti}", str(user.id), ex=60 * 60 * 24 * 30)
+    await redis_client.set(f"refresh:{jti}", str(user.id), ex=60 * 60 * 24 * 1)
 
     return token
 
