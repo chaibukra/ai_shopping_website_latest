@@ -70,6 +70,12 @@ def get_updated_closed_order():
 if "token" not in st.session_state:
     st.session_state.token = None
 
+if "refresh_token" not in st.session_state:
+    st.session_state.refresh_token = None
+
+if "access_token_expires_at" not in st.session_state:
+    st.session_state.access_token_expires_at = None
+
 st.title("Order Page")
 
 with st.sidebar.header("Login"):
@@ -91,6 +97,8 @@ with st.sidebar.header("Login"):
         logout_btn = st.button("Logout")
         if logout_btn:
             st.session_state.token = None
+            st.session_state.refresh_token = None
+            st.session_state.access_token_expires_at = None
             st.sidebar.success("Logout successfully")
             st.rerun()
 
