@@ -18,6 +18,12 @@ def get_updated_favorite_list():
 if "token" not in st.session_state:
     st.session_state.token = None
 
+if "refresh_token" not in st.session_state:
+    st.session_state.refresh_token = None
+
+if "access_token_expires_at" not in st.session_state:
+    st.session_state.access_token_expires_at = None
+
 if "counter" not in st.session_state:
     st.session_state.counter = 0
     items = api.get_all_items()
@@ -42,6 +48,8 @@ with st.sidebar.header("Login"):
     else:
         logout_btn = st.button("Logout")
         if logout_btn:
+            st.session_state.refresh_token = None
+            st.session_state.access_token_expires_at = None
             st.session_state.token = None
             st.sidebar.success("Logout successfully")
 

@@ -41,10 +41,15 @@ def get_updated_favorite_items():
 if "token" not in st.session_state:
     st.session_state.token = None
 
+if "refresh_token" not in st.session_state:
+    st.session_state.refresh_token = None
+
+if "access_token_expires_at" not in st.session_state:
+    st.session_state.access_token_expires_at = None
+
 if st.session_state.token is not None:
     get_updated_temp_order_df()
     get_updated_favorite_items()
-
 
 # --- Shopping Cart (Session State) ---
 if "cart" not in st.session_state:
@@ -77,6 +82,8 @@ with st.sidebar.header("Login"):
         logout_btn = st.button("Logout")
         if logout_btn:
             st.session_state.token = None
+            st.session_state.refresh_token = None
+            st.session_state.access_token_expires_at = None
             st.session_state.favorite_items = {}
             st.session_state.order_total_price = 0
             st.session_state.cart = {}
