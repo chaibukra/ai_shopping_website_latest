@@ -45,23 +45,22 @@ with st.sidebar.header("Login"):
 if st.session_state.token is None:
     st.write("Please login")
 
+if st.session_state.token is not None:
+    role = api.get_user_role(st.session_state.token)
 
-role = api.get_user_role(st.session_state.token)
+    if role == "admin":
+        st.header("Predict User Expense On Technology items")
+        users = api.get_all_users(st.session_state.token)
+        if users:
+            df = pd.DataFrame(users, columns=["id", "username", "first_name", "last_name", "gender", "email", "role"])
+            st.dataframe(df)
+            user_id = st.text_input("Enter the user id you want to predict")
+            if st.button("Submit"):
+                if user_id.isdigit() and int(user_id) in df["id"].tolist():
+                    predict = api.predict_user_expenses_for_tech_items(user_id, st.session_state.token)
+                    st.dataframe(predict)
+                else:
+                    st.error("Please Enter valid id")
 
-if role == "admin":
-    st.header("Predict User Expense On Technology items")
-    users = api.get_all_users(st.session_state.token)
-    if users:
-        df = pd.DataFrame(users, columns=["id", "username", "first_name", "last_name", "gender", "email", "role"])
-        st.dataframe(df)
-        user_id = st.text_input("Enter the user id you want to predict")
-        if st.button("Submit"):
-            if user_id.isdigit() and int(user_id) in df["id"].tolist():
-                predict = api.predict_user_expenses_for_tech_items(user_id, st.session_state.token)
-                st.dataframe(predict)
-            else:
-                st.error("Please Enter valid id")
-
-
-else:
-    st.error("only administrator authorize")
+    else:
+        st.error("only administrator authorize")
