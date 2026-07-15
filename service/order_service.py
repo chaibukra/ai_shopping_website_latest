@@ -146,7 +146,8 @@ async def get_all_closed_order(user: User) -> List[OrderResponse]:
 
 async def delete_all_user_orders(user: User):
     all_orders_ids = await order_repository.get_all_orders_ids(user.id)
-    await item_order_repository.delete_all_user_item_orders(all_orders_ids)
+    if all_orders_ids:
+        await item_order_repository.delete_all_user_item_orders(all_orders_ids)
     await order_repository.delete_all_user_orders(user.id)
 
 

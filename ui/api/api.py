@@ -76,9 +76,21 @@ def refresh_tokens():
     if response.status_code == status.HTTP_200_OK:
         data = response.json()
 
-        st.session_state.access_token = data.get("jwt_token")
+        st.session_state.token = data.get("jwt_token")
         st.session_state.refresh_token = data.get("jwt_refresh_token")
         st.session_state.access_token_expires_at = time.time() + data.get("expires_in")
+    else:
+        st.toast(response.json().get("detail"), icon=":material/error:")
+
+
+def logout():
+    url = f"{BASE_URL}/auth/logout"
+    payload = {"refresh_token": st.session_state.refresh_token}
+    response = requests.delete(url, json=payload)
+    if response.status_code == status.HTTP_200_OK:
+        st.session_state.token = None
+        st.session_state.refresh_token = None
+        st.session_state.access_token_expires_at = None
     else:
         st.toast(response.json().get("detail"), icon=":material/error:")
 

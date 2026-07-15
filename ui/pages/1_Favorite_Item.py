@@ -48,9 +48,7 @@ with st.sidebar.header("Login"):
     else:
         logout_btn = st.button("Logout")
         if logout_btn:
-            st.session_state.refresh_token = None
-            st.session_state.access_token_expires_at = None
-            st.session_state.token = None
+            api.logout()
             st.sidebar.success("Logout successfully")
 
 if st.session_state.token is not None:
