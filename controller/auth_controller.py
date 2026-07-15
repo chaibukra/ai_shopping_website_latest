@@ -24,3 +24,8 @@ async def login_for_token(form_data: OAuth2PasswordRequestForm = Depends()):
 async def refresh(refresh_request: RefreshRequest):
     user = await auth_service.validate_and_revoke_refresh_token(refresh_request.refresh_token)
     return auth_service.create_access_and_refresh_token(user)
+
+
+@router.delete("/logout", status_code=status.HTTP_200_OK)
+async def refresh(refresh_request: RefreshRequest):
+    await auth_service.validate_and_revoke_refresh_token(refresh_request.refresh_token)
