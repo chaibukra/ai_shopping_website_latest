@@ -96,9 +96,7 @@ with st.sidebar.header("Login"):
     else:
         logout_btn = st.button("Logout")
         if logout_btn:
-            st.session_state.token = None
-            st.session_state.refresh_token = None
-            st.session_state.access_token_expires_at = None
+            api.logout()
             st.sidebar.success("Logout successfully")
             st.rerun()
 
@@ -129,6 +127,7 @@ if st.session_state.token is not None:
 
                 st.number_input("quantity", value=product["quantity"],
                                 key=f"n{product["item_name"]}",
+                                min_value=1,
                                 on_change=update_change,
                                 args=[product["item_name"], product["item_id"]])
 
@@ -164,6 +163,7 @@ if st.session_state.token is not None:
                         api.close_order(st.session_state.token, shipping_address)
                         get_updated_temp_order_df()
                         get_updated_closed_order()
+                        st.session_state.df = api.get_all_items()
                         st.rerun()
                     else:
                         st.error("Please fill in all required fields.")

@@ -41,7 +41,7 @@ CREATE TABLE item_order (
     id INT AUTO_INCREMENT,
     order_id INT NOT NULL,
     item_id INT NOT NULL,
-    item_quantity INT NOT NULL,
+    item_quantity INT NOT NULL CHECK (item_quantity > 0),
     PRIMARY KEY (id),
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (item_id) REFERENCES item(item_id)

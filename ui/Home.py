@@ -47,6 +47,9 @@ if "refresh_token" not in st.session_state:
 if "access_token_expires_at" not in st.session_state:
     st.session_state.access_token_expires_at = None
 
+if "delete" not in st.session_state:
+    st.session_state.delete = False
+
 if st.session_state.token is not None:
     get_updated_temp_order_df()
     get_updated_favorite_items()
@@ -65,11 +68,11 @@ if 'show_registration_form' not in st.session_state:
     st.session_state['show_registration_form'] = False
 
 with st.sidebar.header("Login"):
-    username = st.sidebar.text_input("Username")
-    password = st.sidebar.text_input("Password", type="password")
-    col1, _, col2 = st.sidebar.columns([1, 0.1, 1])
-    with col1:
-        login_btn = st.button("Login")
+    if st.session_state.token is None:
+        username = st.sidebar.text_input("Username")
+        password = st.sidebar.text_input("Password", type="password")
+
+        login_btn = st.sidebar.button("Login")
         if login_btn:
             st.session_state.token = api.get_token(username, password)
             if st.session_state.token is not None:
@@ -78,30 +81,92 @@ with st.sidebar.header("Login"):
                 if "favorite_item_df" in st.session_state:
                     del st.session_state["favorite_item_df"]
                 st.rerun()
-    with col2:
-        logout_btn = st.button("Logout")
+    else:
+        logout_btn = st.sidebar.button("Logout")
         if logout_btn:
-            st.session_state.token = None
-            st.session_state.refresh_token = None
-            st.session_state.access_token_expires_at = None
+            api.logout()
+            st.toast("Logout Successfully")
             st.session_state.favorite_items = {}
             st.session_state.order_total_price = 0
             st.session_state.cart = {}
-            st.sidebar.success("Logout successfully")
+            if "closed_orders" in st.session_state:
+                del st.session_state.closed_orders
             st.rerun()
 
-        delete_user = st.button("Delete User")
+        delete_user = st.sidebar.button("Delete User")
         if delete_user:
-            api.delete_user(username, password)
-            st.session_state.token = None
-            st.session_state.favorite_items = {}
-            st.session_state.order_total_price = 0
-            st.session_state.cart = {}
+            st.session_state.delete = True
+        if st.session_state.delete:
+            username = st.sidebar.text_input("Username")
+            password = st.sidebar.text_input("Password", type="password")
+            if st.sidebar.button("Delete"):
+                api.logout()
+                api.delete_user(username, password)
+                st.sidebar.success("Deleted successfully")
+                st.session_state.favorite_items = {}
+                st.session_state.order_total_price = 0
+                st.session_state.cart = {}
+                st.session_state.delete = False
+                if "closed_orders" in st.session_state:
+                    del st.session_state.closed_orders
+                st.rerun()
 
     if st.button("New User"):
         st.session_state.show_registration_form = not st.session_state.show_registration_form
         if st.session_state.show_registration_form:
             st.write("Please fill out the registration form below")
+
+if st.session_state.show_registration_form:
+    st.header("Register a New User")
+    with st.form("Register Form"):
+        username = st.text_input("Username", key="register_username")
+        first_name = st.text_input("First Name", key="register_firstname")
+        last_name = st.text_input("Last Name", key="register_lastname")
+        gender = st.selectbox("Gender", [gender.value for gender in UserGender])
+        age = st.text_input("Age", key="register_age")
+        password = st.text_input("Password", type='password', key="register_password")
+        email = st.text_input("Email", key="register_email")
+        phone = st.text_input("Phone", key="register_phone")
+        country = st.text_input("Country", key="register_country")
+        city = st.text_input("City", key="register_city")
+
+        register_btn = st.form_submit_button("Register")
+
+    if register_btn:
+        try:
+            valid = validate_email(email)
+
+        except EmailNotValidError as e:
+            st.error(str(e))
+
+        if not all([username, first_name, last_name, gender, age, password, email, phone, country, city]):
+            st.error("Please fill in all required fields.")
+
+        elif any(char.isdigit() for char in first_name):
+            st.error("Please enter valid first name")
+
+        elif any(char.isdigit() for char in last_name):
+            st.error("Please enter valid last name")
+
+        elif not age.isdigit() or int(age) < 1 or int(age) > 120:
+            st.error("Please enter valid age")
+
+        elif not phone.isdigit() or len(phone) != 10:
+            st.error("please enter valid phone number")
+        else:
+            user_request = UserRequest(first_name=first_name,
+                                       last_name=last_name,
+                                       gender=gender,
+                                       age=age,
+                                       email=email,
+                                       phone=phone,
+                                       country=country,
+                                       city=city,
+                                       username=username,
+                                       password=password)
+
+            api.register_user(user_request)
+            st.session_state.show_registration_form = not st.session_state.show_registration_form
 
 col1, col2 = st.columns([8, 2])
 
@@ -176,56 +241,6 @@ if st.session_state.df:
 
         st.markdown("</div>", unsafe_allow_html=True)  # Close product container
 
-if st.session_state.show_registration_form:
-    st.header("Register a New User")
-    with st.form("Register Form"):
-        username = st.text_input("Username", key="register_username")
-        first_name = st.text_input("First Name", key="register_firstname")
-        last_name = st.text_input("Last Name", key="register_lastname")
-        gender = st.selectbox("Gender", [gender.value for gender in UserGender])
-        age = st.text_input("Age", key="register_age")
-        password = st.text_input("Password", type='password', key="register_password")
-        email = st.text_input("Email", key="register_email")
-        phone = st.text_input("Phone", key="register_phone")
-        country = st.text_input("Country", key="register_country")
-        city = st.text_input("City", key="register_city")
-
-        register_btn = st.form_submit_button("Register")
-
-    if register_btn:
-        try:
-            valid = validate_email(email)
-
-        except EmailNotValidError as e:
-            st.error(str(e))
-
-        if not all([username, first_name, last_name, gender, age, password, email, phone, country, city]):
-            st.error("Please fill in all required fields.")
-
-        elif any(char.isdigit() for char in first_name):
-            st.error("Please enter valid first name")
-
-        elif any(char.isdigit() for char in last_name):
-            st.error("Please enter valid last name")
-
-        elif not age.isdigit() or int(age) < 1 or int(age) > 120:
-            st.error("Please enter valid age")
-
-        elif not phone.isdigit() or len(phone) != 10:
-            st.error("please enter valid phone number")
-        else:
-            user_request = UserRequest(first_name=first_name,
-                                       last_name=last_name,
-                                       gender=gender,
-                                       age=age,
-                                       email=email,
-                                       phone=phone,
-                                       country=country,
-                                       city=city,
-                                       username=username,
-                                       password=password)
-
-            api.register_user(user_request)
 
 # --- Display Cart ---
 st.sidebar.title("Shopping Cart")
